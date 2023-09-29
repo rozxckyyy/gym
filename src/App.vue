@@ -1,10 +1,24 @@
 <template>
   <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+    <v-btn>dsads</v-btn>
   </nav>
-  <router-view/>
+  <div class="container">
+    <router-view></router-view>
+  </div>
 </template>
+
+<script>
+import Login from './views/Login.vue';
+import Reg from './views/Reg.vue';
+
+export default {
+  name: "App",
+  components: {
+    Login,
+    Reg,
+  }
+}
+</script>
 
 <style lang="scss">
 #app {
@@ -13,6 +27,14 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+}
+
+.container {
+  height: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
 }
 
 nav {
