@@ -1,6 +1,13 @@
 <template>
-  <nav>
-    <v-btn>dsads</v-btn>
+  <nav :class="isMenu ? 'jce' : 'jcs'">
+    <template v-if="!isMenu">
+      <v-btn variant="plain" class="text-blue" @click="goBack">
+        Назад
+      </v-btn>
+    </template>
+    <router-link class="text-blue text-decoration-none profile" to="/profile">
+      Профиль
+    </router-link>
   </nav>
   <div class="container">
     <router-view></router-view>
@@ -16,6 +23,18 @@ export default {
   components: {
     Login,
     Reg,
+  },
+  computed: {
+    isMenu() {
+      return (this.$route.path === '/menu' ||
+      this.$route.path === '/login' ||
+      this.$route.path === '/reg')
+    }
+  },
+  methods: {
+    goBack() {
+      this.$router.go(-1)
+    }
   }
 }
 </script>
@@ -39,14 +58,20 @@ export default {
 
 nav {
   padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
+  display: flex;
+  .profile {
+    border: 2px solid;
+    border-radius: 5%;
+    padding: 5px 10px;
   }
+}
+.jce {
+  justify-content: end;
+}
+.jcs {
+  justify-content: space-between;
+}
+a {
+  text-decoration: none;
 }
 </style>
