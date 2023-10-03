@@ -8,6 +8,8 @@ const Services = () => import('../views/Services.vue')
 const Coaches = () => import('../views/Coaches.vue')
 const Admin = () => import('../views/Admin.vue')
 const MyServices = () => import('../views/MyServices.vue')
+const Service = () => import('../views/Service.vue')
+const DatePick = () => import('../views/DatePick.vue')
 
 
 const routes = [
@@ -38,6 +40,14 @@ const routes = [
   {
     path: '/menu/services/coaches',
     component: Coaches
+  },
+  {
+    path: '/menu/services/coaches/service',
+    component: Service
+  },
+  {
+    path: '/menu/services/coaches/service/date-pick',
+    component: DatePick
   },
   {
     path: '/admin',

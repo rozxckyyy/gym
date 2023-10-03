@@ -16,7 +16,7 @@
 	name: 'Services',
 	components: {
 	  Card
-	}
+	},
  }
  </script>
  

@@ -51,7 +51,7 @@
 		},
 		addTo(coach) {
 			this.$store.dispatch('saveSelectedCoach', coach)
-			this.$router.push('/menu/services')
+			this.$router.push('/menu/services/coaches/service')
 		}
 	},
 	created() {
@@ -67,7 +67,7 @@
 	flex-direction: column;
 	gap: 20px;
  }
- .card {
+.card {
 	display: flex;
 	justify-content: space-between;
 	padding: 10px 40px;

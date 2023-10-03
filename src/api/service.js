@@ -23,3 +23,11 @@ export const deliteMyService = params => {
 		data: params
 	})
 }
+
+export const ServicesByCoach = params => {
+	return request({
+		url: '/servicesByCoach',
+		method: 'post',
+		data: params
+	})
+}
