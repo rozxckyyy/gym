@@ -10,6 +10,7 @@ const Admin = () => import('../views/Admin.vue')
 const MyServices = () => import('../views/MyServices.vue')
 const Service = () => import('../views/Service.vue')
 const DatePick = () => import('../views/DatePick.vue')
+const MyDate = () => import('../views/MyDate.vue')
 
 
 const routes = [
@@ -32,6 +33,10 @@ const routes = [
   {
     path: '/profile/myservices',
     component: MyServices
+  },
+  {
+    path: '/profile/mydate',
+    component: MyDate
   },
   {
     path: '/menu/services',

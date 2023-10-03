@@ -52,6 +52,7 @@
 			</template>
 			<template v-if="isCoach">
 				<v-btn
+				@click="$router.push('/profile/mydate')"
 				block
 				size="large"
 				variant="tonal">
