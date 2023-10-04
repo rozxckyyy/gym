@@ -1,66 +1,82 @@
 <template>
-	<v-card 
-	min-width="450"
-	class="card-padd card-inner">
-		<span class="mdi mdi-account-circle-outline pr"></span>
-		<div class="info">
-			<template v-if="isCoach">
+	<div class="profile">
+		<v-card 
+		min-width="450"
+		class="card-padd card-inner">
+			<span class="mdi mdi-account-circle-outline pr"></span>
+			<div class="info">
+				<template v-if="isCoach">
+					<v-text-field
+					readonly
+					v-model="user.rang"
+					placeholder="E-mail"
+					prepend-inner-icon="mdi mdi-account-star"
+					variant="outlined"
+					density="compact">
+					</v-text-field>
+				</template>
 				<v-text-field
 				readonly
-				v-model="user.rang"
+				v-model="user.email"
 				placeholder="E-mail"
-				prepend-inner-icon="mdi mdi-account-star"
+				prepend-inner-icon="mdi mdi-email-outline"
 				variant="outlined"
 				density="compact">
 				</v-text-field>
-			</template>
-			<v-text-field
-			readonly
-			v-model="user.email"
-			placeholder="E-mail"
-			prepend-inner-icon="mdi mdi-email-outline"
-			variant="outlined"
-			density="compact">
-			</v-text-field>
-			<v-text-field
-			readonly
-			v-model="user.name"
-			placeholder="Имя"
-			prepend-inner-icon="mdi mdi-account-outline"
-			variant="outlined"
-			density="compact">
-			</v-text-field>
-		</div>
-		<div class="btns">
-			<v-btn
-			@click="logOut"
-			block
-			color="error"
-			size="large"
-			variant="tonal"
-			type="submit">
-				Выйти из аккаунта
-			</v-btn>
-			<template v-if="isCoach">
+				<v-text-field
+				readonly
+				v-model="user.name"
+				placeholder="Имя"
+				prepend-inner-icon="mdi mdi-account-outline"
+				variant="outlined"
+				density="compact">
+				</v-text-field>
+			</div>
+			<div class="btns">
 				<v-btn
-				@click="$router.push('/profile/myservices')"
+				@click="logOut"
+				block
+				color="error"
+				size="large"
+				variant="tonal"
+				type="submit">
+					Выйти из аккаунта
+				</v-btn>
+				<v-btn
+				@click="$router.push('/profile/history')"
 				block
 				size="large"
 				variant="tonal">
-				Мои услуги
+				История услуг
 				</v-btn>
-			</template>
-			<template v-if="isCoach">
 				<v-btn
-				@click="$router.push('/profile/mydate')"
+				@click="$router.push('/profile/favorite')"
 				block
 				size="large"
 				variant="tonal">
-				Мое расписание
+				Избранное
 				</v-btn>
-			</template>
-		</div>
-	</v-card>
+				<template v-if="isCoach">
+					<v-btn
+					@click="$router.push('/profile/myservices')"
+					block
+					size="large"
+					variant="tonal">
+					Мои услуги
+					</v-btn>
+				</template>
+				<template v-if="isCoach">
+					<v-btn
+					@click="$router.push('/profile/mydate')"
+					block
+					size="large"
+					variant="tonal">
+					Мое расписание
+					</v-btn>
+				</template>
+			</div>
+		</v-card>
+	</div>
 </template>
 
 <script>
@@ -104,6 +120,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.profile {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 40px;
+}
 .card-padd {
     padding: 40px 20px !important;
 }

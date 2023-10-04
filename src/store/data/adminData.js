@@ -1,7 +1,8 @@
 export default {
 	state: {
 		users: [],
-		usersRangs: []
+		usersRangs: [],
+		services: [],
 	},
 	getters: {
 		getUsersAdmin: state => {
@@ -9,6 +10,9 @@ export default {
 		},
 		getUsersRangAdmin: state => {
 			return state.usersRangs;
+		},
+		getServices: state => {
+			return state.services;
 		},
 	},
 	mutations: {
@@ -43,6 +47,9 @@ export default {
 				}
 			});
 		},
+		setServices(state, services) {
+			state.services = (services ?? []);	
+		},
 	}, 
 	actions: {
 		saveUsersAdmin(context, users) {
@@ -60,6 +67,8 @@ export default {
 		saveCreateUserUpdateRang(context, user) {
 			context.commit('setCreateUserUpdateRang', user);
 		},
-		
+		saveServices(context, services) {
+			context.commit('setServices', services);
+		},
 	}
 }

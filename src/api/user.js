@@ -79,3 +79,27 @@ export const getAllCoach = params => {
 		data: params
 	})
 }
+
+export const addFavoriteCoach = params => {
+	return request({
+		url: '/addFavoriteCoach',
+		method: 'post',
+		data: params
+	})
+}
+
+export const getFavoriteCoach = params => {
+	return request({
+		url: '/getFavoriteCoach',
+		method: 'post',
+		data: params
+	})
+}
+
+export const removeFavoriteCoach = params => {
+	return request({
+		url: '/removeFavoriteCoach',
+		method: 'post',
+		data: params
+	})
+}

@@ -11,6 +11,8 @@ const MyServices = () => import('../views/MyServices.vue')
 const Service = () => import('../views/Service.vue')
 const DatePick = () => import('../views/DatePick.vue')
 const MyDate = () => import('../views/MyDate.vue')
+const History = () => import('../views/History.vue')
+const Favorite = () => import('../views/Favorite.vue')
 
 
 const routes = [
@@ -37,6 +39,14 @@ const routes = [
   {
     path: '/profile/mydate',
     component: MyDate
+  },
+  {
+    path: '/profile/history',
+    component: History
+  },
+  {
+    path: '/profile/favorite',
+    component: Favorite
   },
   {
     path: '/menu/services',

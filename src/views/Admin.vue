@@ -1,5 +1,5 @@
 <template>
-	<v-card>
+	<v-card class="menu">
 		<v-tabs v-model="tab" bg-color="transparent">
 			<v-tab value="one">Роли</v-tab>
 			<v-tab value="two">Управление рангами</v-tab>
@@ -77,7 +77,31 @@
 				</v-window-item>
 
 				<v-window-item value="three">
-					Three
+					<div>
+						<v-select
+						v-model="selectedService"
+						label="Выберите услугу"
+						no-data-text="Услуги не загружены"
+						:items="services"
+						item-value="_id"
+						item-title="name"
+						variant="outlined">
+						</v-select>
+						<div>
+							<v-text-field v-model="name" clearable placeholder="Название услуги" variant="outlined"></v-text-field>
+							<v-textarea v-model="info" rows="10" row-height="15" :rules="infoRules" counter clearable placeholder="Описание услуги" variant="outlined"></v-textarea>
+							<v-text-field v-model="price" clearable placeholder="Цена" variant="outlined"></v-text-field>
+						</div>
+						<v-btn
+						:loading="loading"
+						:disabled="infoRules && selectedService"
+						block
+						color="blue"
+						size="large"
+						variant="tonal">
+						Добавить услугу
+						</v-btn>
+					</div>
 				</v-window-item>
 			</v-window>
 		</v-card-text>
@@ -85,7 +109,8 @@
 </template>
 
 <script>
-import { getAllUsersAdmin, upRoleAdmin, downRoleAdmin, getAllUsersRangAdmin, upRangAdmin, downRangAdmin } from '../api/user.js'
+import { getAllUsersAdmin, upRoleAdmin, downRoleAdmin, getAllUsersRangAdmin, upRangAdmin, downRangAdmin, authMe } from '../api/user.js'
+import { getAllServices } from '../api/service.js'
 
 export default {
 	name: "Admin",
@@ -95,10 +120,24 @@ export default {
 			roleMin: 'user',
 			roleMax: 'coach',
 			rangMin: null,
-			rangMax: 'Старший тренер'
+			rangMax: 'Старший тренер',
+			loading: false,
+			name: '',
+			info: '',
+			price: '',
+			infoRules: [v => v.length <= 250 || 'Максимальная кол-во символов 250'],
+			selectedService: ''
 		}
 	},
 	computed: {
+		user: {
+			get() {
+				return this.$store.getters.getUser;
+			},
+			set(value) {
+				return this.$store.dispatch('saveUser', value)
+			}
+		},
 		users: {
 			get() {
 				return this.$store.getters.getUsersAdmin;
@@ -115,6 +154,14 @@ export default {
 				return this.$store.dispatch('saveUsersRangAdmin', value)
 			}
 		},
+		services: {
+			get() {
+				return this.$store.getters.getServices;
+			},
+			set(value) {
+				return this.$store.dispatch('saveServices', value)
+			}
+		}
 	},
 	methods: {
 		roleUp(id) {
@@ -146,16 +193,39 @@ export default {
 			getAllUsersRangAdmin().then((res) => {
 				this.$store.dispatch('saveUsersRangAdmin', res.data)
 			})
+		},
+		getServices() {
+			getAllServices().then((res) => {
+				this.$store.dispatch('saveServices', res.data)
+			})
+		},
+		isAuth() {
+			// && this.user.type !== 'admin'
+			if (!localStorage.getItem('token')) {
+				this.$router.push('/login');
+			} else {
+				authMe().then((res) => {
+					this.$store.dispatch('saveUser', res.data)
+					this.getAllUsers()
+					this.getAllUsersRang()
+					this.getServices()
+				})
+			}
 		}
 	},
 	created() {
-		this.getAllUsers()
-		this.getAllUsersRang()
+		this.isAuth()
 	}
 }
 </script>
 
 <style lang="scss" scoped>
+.menu {
+width: 100%;
+display: flex;
+flex-direction: column;
+gap: 20px;
+}
 .item {
 	display: flex;
 	justify-content: space-between;

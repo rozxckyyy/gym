@@ -12,9 +12,6 @@
 						<v-btn @click="addTo(service)" variant="plain">
 							<span class="mdi mdi-plus-circle-outline"></span>
 						</v-btn>
-						<v-btn @click="addFavorite(service)" variant="plain">
-							<span class="mdi mdi-heart-outline"></span>
-						</v-btn>
 					</div>
 				</div>
 			</v-card>
@@ -51,7 +48,6 @@ export default {
 				return this.$store.dispatch('saveServicesAll', value)
 			}
 		},
-		// isServices
 	},
 	methods: {
 		getServicesByCoach() {

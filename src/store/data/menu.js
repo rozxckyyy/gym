@@ -3,7 +3,8 @@ export default {
 		coachAll: [],
 		selectedCoach: {},
 		servicesAll: [],
-		servicesSelected: {}
+		servicesSelected: {},
+		servicesDateAll: [],
 	},
 	getters: {
 		getCoachAll: state => {
@@ -17,6 +18,9 @@ export default {
 		},
 		getServicesSelected: state => {
 			return state.servicesSelected;
+		},
+		getServicesDateAll: state => {
+			return state.servicesDateAll;
 		},
 	},
 	mutations: {
@@ -32,6 +36,9 @@ export default {
 		setServicesSelected(state, service) {
 			state.servicesSelected = (service ?? {});
 		},
+		setServicesDateAll(state, services) {
+			state.servicesDateAll = (services ?? []);
+		},
 	},
 	actions: {
 		saveCoachAll(context, user) {
@@ -45,6 +52,9 @@ export default {
 		},
 		saveServicesSelected(context, service) {
 			context.commit('setServicesSelected', service);
+		},
+		saveServicesDateAll(context, service) {
+			context.commit('setServicesDateAll', service);
 		},
 	}
 }

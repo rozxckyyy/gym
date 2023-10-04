@@ -3,9 +3,6 @@
 		<router-link to="/menu/services/coaches">
 			<Card icon="mdi mdi-account-multiple" title="Выбрать тренера"></Card>
 		</router-link>
-
-	  <Card icon="mdi mdi-calendar-clock" title="Выбрать дату и время"></Card>
-	  <Card icon="mdi mdi-format-list-bulleted" title="Выбрать услугу"></Card>
 	</div>
  </template>
  

@@ -1,9 +1,14 @@
 <template>
   <nav :class="isMenu ? 'jce' : 'jcs'">
     <template v-if="!isMenu">
-      <v-btn variant="plain" class="text-blue" @click="goBack">
-        Назад
-      </v-btn>
+      <div class="btns">
+        <v-btn variant="plain" class="text-blue" @click="goBack">
+          Назад
+        </v-btn>
+        <v-btn variant="plain" class="text-blue" @click="goMenu">
+          Меню
+        </v-btn>
+      </div>
     </template>
     <router-link class="text-blue text-decoration-none profile" to="/profile">
       Профиль
@@ -34,8 +39,11 @@ export default {
   methods: {
     goBack() {
       this.$router.go(-1)
-    }
-  }
+    },
+    goMenu() {
+      this.$router.push('/menu')
+    },
+  },
 }
 </script>
 
@@ -63,6 +71,10 @@ nav {
     border: 2px solid;
     border-radius: 5%;
     padding: 5px 10px;
+  }
+  .btns {
+    display: flex;
+    gap: 10px;
   }
 }
 .jce {
