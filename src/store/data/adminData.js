@@ -3,6 +3,7 @@ export default {
 		users: [],
 		usersRangs: [],
 		services: [],
+		serviceDate: []
 	},
 	getters: {
 		getUsersAdmin: state => {
@@ -13,6 +14,9 @@ export default {
 		},
 		getServices: state => {
 			return state.services;
+		},
+		getServicesDate: state => {
+			return state.serviceDate;
 		},
 	},
 	mutations: {
@@ -50,6 +54,26 @@ export default {
 		setServices(state, services) {
 			state.services = (services ?? []);	
 		},
+		setEditService(state, service) {
+			state.services.forEach(e => {
+				if (e._id === service._id) {
+					e.name = service.name
+					e.info = service.info
+					e.price = service.price
+				}
+			});	
+		},
+		setServicesDate(state, services) {
+			state.serviceDate = (services ?? []);	
+		},
+		setEditServiceDate(state, service) {
+			state.services.forEach(e => {
+				if (e._id === service._id) {
+					e.time = service.time
+					e.date = service.date
+				}
+			});	
+		},
 	}, 
 	actions: {
 		saveUsersAdmin(context, users) {
@@ -69,6 +93,15 @@ export default {
 		},
 		saveServices(context, services) {
 			context.commit('setServices', services);
+		},
+		saveEditService(context, service) {
+			context.commit('setEditService', service);
+		},
+		saveServicesDate(context, services) {
+			context.commit('setServicesDate', services);
+		},
+		saveEditServiceDate(context, service) {
+			context.commit('setEditServiceDate', service);
 		},
 	}
 }

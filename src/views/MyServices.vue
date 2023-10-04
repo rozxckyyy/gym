@@ -10,7 +10,7 @@
 				</div>
 				<v-btn
 				:loading="loading"
-				:disabled="!infoRules"
+				:disabled="!rules"
 				block
 				color="blue"
 				size="large"
@@ -74,6 +74,9 @@ export default {
 			set(value) {
 				return this.$store.dispatch('saveMyServicesAll', value)
 			}
+		},
+		rules() {
+			return (this.infoRules && this.name?.length > 0 && this.price?.length > 0)
 		}
 	},
 	methods: {

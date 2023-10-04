@@ -87,3 +87,27 @@ export const getAllServices = params => {
 		data: params
 	})
 }
+
+export const editService = params => {
+	return request({
+		url: '/admin/editService',
+		method: 'post',
+		data: params
+	})
+}
+
+export const getAllServicesDate = params => {
+	return request({
+		url: '/admin/allServicesDate',
+		method: 'get',
+		data: params
+	})
+}
+
+export const editServiceDate = params => {
+	return request({
+		url: '/admin/editServicesDate',
+		method: 'post',
+		data: params
+	})
+}

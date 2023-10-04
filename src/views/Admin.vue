@@ -3,7 +3,8 @@
 		<v-tabs v-model="tab" bg-color="transparent">
 			<v-tab value="one">Роли</v-tab>
 			<v-tab value="two">Управление рангами</v-tab>
-			<v-tab value="three">Изменение тренировок</v-tab>
+			<v-tab value="three">Изменение услуг</v-tab>
+			<v-tab value="four">Изменение расписания услуг</v-tab>
 		</v-tabs>
 
 		<v-card-text>
@@ -83,7 +84,7 @@
 						label="Выберите услугу"
 						no-data-text="Услуги не загружены"
 						:items="services"
-						item-value="_id"
+						:return-object="true"
 						item-title="name"
 						variant="outlined">
 						</v-select>
@@ -93,8 +94,45 @@
 							<v-text-field v-model="price" clearable placeholder="Цена" variant="outlined"></v-text-field>
 						</div>
 						<v-btn
+						@click="editSelectedService"
 						:loading="loading"
-						:disabled="infoRules && selectedService"
+						:disabled="!rules"
+						block
+						color="blue"
+						size="large"
+						variant="tonal">
+						Добавить услугу
+						</v-btn>
+					</div>
+				</v-window-item>
+
+				<v-window-item value="four">
+					<div>
+						<v-select
+						v-model="selectedServiceDate"
+						label="Выберите услугу"
+						no-data-text="Услуги не загружены"
+						:items="servicesDate"
+						item-value="_id"
+						:item-props="itemProps"
+						variant="outlined">
+						</v-select>
+						<v-select
+						v-model="selectedTime"
+						label="Выберите доступное время"
+						:items="['10:00','12:00','14:00','16:00','18:00','20:00']"
+						variant="outlined">
+						</v-select>
+						<v-text-field
+						v-model="selectedDate"
+						type="date"
+						variant="outlined"
+						density="compact">
+						</v-text-field>
+						<v-btn
+						@click="editSelectedServiceDate"
+						:loading="loading"
+						:disabled="!rules2"
 						block
 						color="blue"
 						size="large"
@@ -110,7 +148,7 @@
 
 <script>
 import { getAllUsersAdmin, upRoleAdmin, downRoleAdmin, getAllUsersRangAdmin, upRangAdmin, downRangAdmin, authMe } from '../api/user.js'
-import { getAllServices } from '../api/service.js'
+import { getAllServices, editService, getAllServicesDate, editServiceDate } from '../api/service.js'
 
 export default {
 	name: "Admin",
@@ -126,7 +164,10 @@ export default {
 			info: '',
 			price: '',
 			infoRules: [v => v.length <= 250 || 'Максимальная кол-во символов 250'],
-			selectedService: ''
+			selectedService: '',
+			selectedDate: '',
+			selectedTime: '',
+			selectedServiceDate: '',
 		}
 	},
 	computed: {
@@ -156,14 +197,34 @@ export default {
 		},
 		services: {
 			get() {
-				return this.$store.getters.getServices;
+				return this.$store.getters.getServices; 
 			},
 			set(value) {
 				return this.$store.dispatch('saveServices', value)
 			}
+		},
+		servicesDate: {
+			get() {
+				return this.$store.getters.getServicesDate; 
+			},
+			set(value) {
+				return this.$store.dispatch('saveServicesDate', value)
+			}
+		},
+		rules() {
+			return (this.infoRules && this.name?.length > 0 && this.price?.length > 0 && this.selectedService)
+		},
+		rules2() {
+			return (this.selectedDate && this.selectedTime && this.selectedServiceDate)
 		}
 	},
 	methods: {
+		itemProps(item) {
+			return {
+				title: item.date,
+				subtitle: item.time
+			}
+		},
 		roleUp(id) {
 			upRoleAdmin({ _id: id }).then((res) => {
 				this.$store.dispatch('saveUserUpdateType', res.data)
@@ -199,6 +260,21 @@ export default {
 				this.$store.dispatch('saveServices', res.data)
 			})
 		},
+		getServicesDate() {
+			getAllServicesDate().then((res) => {
+				this.$store.dispatch('saveServicesDate', res.data)
+			})
+		},
+		editSelectedServiceDate() { 
+			editServiceDate({_id: selectedServiceDate, time: this.selectedTime, date: this.selectedDate}).then((res) => {
+				this.$store.dispatch('saveEditServiceDate', res.data)
+			})
+		},
+		editSelectedService() {
+			editService({_id: this.selectedService, name: this.name, info: this.info, price: this.price, authorId: this.selectedService.authorId}).then((res) => {
+				this.$store.dispatch('saveEditService', res.data)
+			})
+		},
 		isAuth() {
 			// && this.user.type !== 'admin'
 			if (!localStorage.getItem('token')) {
@@ -209,6 +285,7 @@ export default {
 					this.getAllUsers()
 					this.getAllUsersRang()
 					this.getServices()
+					this.getServicesDate()
 				})
 			}
 		}
