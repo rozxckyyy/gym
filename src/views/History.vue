@@ -9,7 +9,12 @@
 							<p class="title">{{ service.authorId.name }}</p>
 							<p class="up-title">{{ service.service.name }}</p>
 							<p class="up-title">{{ service.date }} | {{ service.time }}</p>
-							<p class="title">{{ service.service.price }} ₽</p>
+							<template v-if="service?.discountPrice">
+								<p class="title">{{ service.discountPrice }} ₽ - Со скидкой</p>
+							</template>
+							<template v-else>
+								<p class="title">{{ service.service.price }} ₽</p>
+							</template>
 						</div>
 					</div>
 				</div>

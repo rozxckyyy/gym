@@ -101,22 +101,37 @@
 						color="blue"
 						size="large"
 						variant="tonal">
-						Добавить услугу
+						Изменить услугу
 						</v-btn>
 					</div>
 				</v-window-item>
 
 				<v-window-item value="four">
 					<div>
-						<v-select
-						v-model="selectedServiceDate"
-						label="Выберите услугу"
-						no-data-text="Услуги не загружены"
-						:items="servicesDate"
-						item-value="_id"
-						:item-props="itemProps"
-						variant="outlined">
-						</v-select>
+						<div class="item-service">
+							<v-item-group mandatory v-model="selectedServiceDate">
+								<v-row>
+									<v-col
+									v-for="service in servicesDate">
+									<v-item v-slot="{isSelected, toggle}">
+										<v-card
+										:class="isSelected ? 'text-blue' : ''"
+										class="d-flex align-center"
+										@click="toggle"
+										dark>
+										<v-scroll-y-transition>
+											<div class="text-h4 flex-grow-1 text-center">
+												<p>{{ service.service.name }}</p>
+												<p>{{ service.date }}</p>
+												<p>{{ service.time }}</p>
+											</div>
+										</v-scroll-y-transition>
+										</v-card>
+									</v-item>
+									</v-col>
+								</v-row>
+							</v-item-group>
+						</div>
 						<v-select
 						v-model="selectedTime"
 						label="Выберите доступное время"
@@ -215,16 +230,10 @@ export default {
 			return (this.infoRules && this.name?.length > 0 && this.price?.length > 0 && this.selectedService)
 		},
 		rules2() {
-			return (this.selectedDate && this.selectedTime && this.selectedServiceDate)
+			return (this.selectedDate && this.selectedTime)
 		}
 	},
 	methods: {
-		itemProps(item) {
-			return {
-				title: item.date,
-				subtitle: item.time
-			}
-		},
 		roleUp(id) {
 			upRoleAdmin({ _id: id }).then((res) => {
 				this.$store.dispatch('saveUserUpdateType', res.data)
@@ -266,7 +275,8 @@ export default {
 			})
 		},
 		editSelectedServiceDate() { 
-			editServiceDate({_id: selectedServiceDate, time: this.selectedTime, date: this.selectedDate}).then((res) => {
+			editServiceDate({_id: this.servicesDate[this.selectedServiceDate]._id, time: this.selectedTime, date: this.selectedDate,
+								 authorId: this.servicesDate[this.selectedServiceDate].authorId, service: this.servicesDate[this.selectedServiceDate].service._id}).then((res) => {
 				this.$store.dispatch('saveEditServiceDate', res.data)
 			})
 		},
@@ -276,10 +286,11 @@ export default {
 			})
 		},
 		isAuth() {
-			// && this.user.type !== 'admin'
 			if (!localStorage.getItem('token')) {
 				this.$router.push('/login');
-			} else {
+			} else if (this.user.type !== 'admin' && localStorage.getItem('token')) {
+				this.$router.push('/menu');
+			} else if (this.user.type === 'admin' && localStorage.getItem('token')) {
 				authMe().then((res) => {
 					this.$store.dispatch('saveUser', res.data)
 					this.getAllUsers()
@@ -297,6 +308,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.item-service {
+	padding: 20px;
+}
 .menu {
 width: 100%;
 display: flex;
@@ -313,7 +327,9 @@ span {
 	color: #fff;
 	font-size: 20px;
 }
-
+.text-blue {
+   color: #2196F3 !important;
+}
 .btns {
 	display: flex;
 }

@@ -44,7 +44,12 @@
 							<div class="card-inner1">
 								<p class="title">{{ serviceDate.date }} | {{ serviceDate.time }}</p>
 								<p class="up-title">{{ serviceDate.service.name }}</p>
-								<p class="title">{{ serviceDate.service.price }} ₽</p>
+                                <template v-if="serviceDate?.discountPrice">
+									<p class="title">{{ serviceDate.discountPrice }} ₽ - Со скидкой</p>
+								</template>
+								<template v-else>
+									<p class="title">{{ serviceDate.service.price }} ₽</p>
+								</template>
 							</div>
 						</div>
 						<v-btn @click="delService(serviceDate._id)" variant="plain" class="err">

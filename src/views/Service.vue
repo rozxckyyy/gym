@@ -51,7 +51,11 @@ export default {
 	},
 	methods: {
 		getServicesByCoach() {
-			if (this.coacheSelected?._id) {
+			if (this.coacheSelected?.coach?._id) {
+				ServicesByCoach({id: this.coacheSelected.coach._id}).then((res) => {
+					this.$store.dispatch('saveServicesAll', res.data)
+				})
+			} else if (this.coacheSelected._id) {
 				ServicesByCoach({id: this.coacheSelected._id}).then((res) => {
 					this.$store.dispatch('saveServicesAll', res.data)
 				})

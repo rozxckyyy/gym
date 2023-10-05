@@ -67,7 +67,7 @@ export default {
 			state.serviceDate = (services ?? []);	
 		},
 		setEditServiceDate(state, service) {
-			state.services.forEach(e => {
+			state.serviceDate.forEach(e => {
 				if (e._id === service._id) {
 					e.time = service.time
 					e.date = service.date

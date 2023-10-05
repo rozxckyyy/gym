@@ -30,7 +30,7 @@
 							<div class="card-inner1">
 								<p class="title">{{ service.name }}</p>
 								<p class="up-title">{{ service.info }}</p>
-								<p class="title">{{ service.price }}</p>
+								<p class="title">{{ service.price }} ₽</p>
 							</div>
 						</div>
 						<v-btn @click="delService(service._id)" variant="plain" class="err">

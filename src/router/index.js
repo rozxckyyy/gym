@@ -13,9 +13,19 @@ const DatePick = () => import('../views/DatePick.vue')
 const MyDate = () => import('../views/MyDate.vue')
 const History = () => import('../views/History.vue')
 const Favorite = () => import('../views/Favorite.vue')
+const NotFound = () => import('../views/NotFound.vue')
 
+// самый обычный роутер
 
 const routes = [
+  {
+    path: '/:pathMatch(.*)*',
+    component:NotFound
+  },
+  {
+    path: '/',
+    component: Menu
+  },
   {
     path: '/menu',
     component: Menu

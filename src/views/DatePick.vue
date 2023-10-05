@@ -22,11 +22,17 @@
 					</v-btn>
 			</div>
 		</v-card>
+		<template v-if="isDiscount">
+			<div class="discount">
+				<v-alert title="Важно" text="К данной услуге будет применена скидка 20%" type="success" variant="outlined">
+				</v-alert>
+			</div>
+		</template>
 	</div>
 </template>
 
 <script>
-import { getServicesDateUser, signUpToService} from '../api/service.js'
+import { getServicesDateUser, signUpToService, getServicesDateByUser, signUpToServiceDiscount} from '../api/service.js'
 import { authMe } from '../api/user.js';
 
 export default {
@@ -69,10 +75,27 @@ export default {
 				return this.$store.dispatch('saveUser', value)
 			}
 		},
+		historyServices: {
+			get() {
+				return this.$store.getters.getMyHistoryService;
+			},
+			set(value) {
+				return this.$store.dispatch('saveMyHistoryService', value)
+			}
+		},
+		isDiscount() {
+			if (this.historyServices.length === 0) return false
+			else if (this.historyServices.length % 2 === 0) return true
+			else return false
+		},
 	},
 	methods: {
 		getServices() {
-			if (this.coacheSelected?._id && this.serviceSelected?._id) {
+			if (this.coacheSelected?.coach?._id && this.serviceSelected._id) {
+				getServicesDateUser({authorId: this.coacheSelected.coach._id, serviceId: this.serviceSelected._id}).then((res) => {
+					this.$store.dispatch('saveServicesDateAll', res.data)
+				})
+			} else if (this.coacheSelected._id && this.serviceSelected._id) {
 				getServicesDateUser({authorId: this.coacheSelected._id, serviceId: this.serviceSelected._id}).then((res) => {
 					this.$store.dispatch('saveServicesDateAll', res.data)
 				})
@@ -81,15 +104,27 @@ export default {
 			}
 		},
 		signUp() {
-			signUpToService({serviceId: this.selectedDate, userId: this.user._id}).then((res) => {
-				console.log(res.data)
-			})
+			if (this.isDiscount) {
+				signUpToServiceDiscount({serviceId: this.selectedDate, userId: this.user._id, price: this.serviceSelected.price}).then((res) => {
+					this.$router.push('/profile/history')
+				})
+			} else {
+				signUpToService({serviceId: this.selectedDate, userId: this.user._id}).then((res) => {
+					this.$router.push('/profile/history')
+				})
+			}
+			
 		},
 		itemProps(item) {
 			return {
 				title: item.date,
 				subtitle: item.time
 			}
+		},
+		getServicesHistory() {
+			getServicesDateByUser({userId: this.user._id}).then((res) => {
+				this.$store.dispatch('saveMyHistoryService', res.data)
+			})
 		},
 		isAuth() {
 			if (!localStorage.getItem('token')) {
@@ -98,6 +133,7 @@ export default {
 				authMe().then((res) => {
 					this.$store.dispatch('saveUser', res.data)
 					this.getServices()
+					this.getServicesHistory()
 				})
 			}
 		}
@@ -118,6 +154,9 @@ export default {
 .card-padd {
     width: 100%;
     padding: 40px 20px !important;
+}
+.discount {
+	text-align: left;
 }
 .card-inner {
     display: flex;

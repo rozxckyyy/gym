@@ -62,6 +62,14 @@ export const signUpToService = params => {
 		method: 'post',
 		data: params
 	})
+} 
+
+export const signUpToServiceDiscount = params => {
+	return request({
+		url: '/signUpToServiceDiscount',
+		method: 'post',
+		data: params
+	})
 }
 
 export const getServicesDateByUser = params => {
