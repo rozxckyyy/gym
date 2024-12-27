@@ -55,7 +55,7 @@ export default {
 			name: '',
 			info: '',
 			price: '',
-			infoRules: [v => v.length <= 250 || 'Максимальная кол-во символов 250']
+			infoRules: [v => v.length <= 250 || 'Максимальное кол-во символов 250']
 		}
 	},
 	computed: {
@@ -76,7 +76,7 @@ export default {
 			}
 		},
 		rules() {
-			return (this.infoRules && this.name?.length > 0 && this.price?.length > 0)
+			return (this.info?.length > 0 && this.name?.length > 0 && this.price?.length > 0)
 		}
 	},
 	methods: {

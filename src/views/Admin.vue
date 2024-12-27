@@ -20,22 +20,37 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr v-for="(user) in users" :key="user.email">
+							<tr v-for="(user) in users" :key="user._id">
 								<td>{{ user.email }}</td>
 								<td>{{ user.name }}</td>
 								<td>{{ user.type }}</td>
 								<td>
 									<div class="btns">
 										<template v-if="user.type !== roleMin">
-											<v-btn variant="plain" @click="roleDown(user._id)">
-												<span class="mdi mdi-arrow-down"></span>
-											</v-btn>
+											<v-tooltip text="Назначить клиентом" location="right">
+												<template v-slot:activator="{ props }">
+													<v-btn variant="plain" @click="roleDown(user._id)" v-bind="props">
+														<span class="mdi mdi-arrow-down"></span>
+													</v-btn>
+												</template>
+											</v-tooltip>
 										</template>
 										<template v-if="user.type !== roleMax">
-											<v-btn variant="plain" @click="roleUp(user._id)">
-												<span class="mdi mdi-arrow-up"></span>
-											</v-btn>
+											<v-tooltip text="Назначить тренером" location="right">
+												<template v-slot:activator="{ props }">
+													<v-btn variant="plain" @click="roleUp(user._id)" v-bind="props">
+														<span class="mdi mdi-arrow-up"></span>
+													</v-btn>
+												</template>
+											</v-tooltip>
 										</template>
+										<v-tooltip text="Изменить пароль" location="right">
+											<template v-slot:activator="{ props }">
+												<v-btn variant="plain" @click="openModal(user._id)" v-bind="props">
+													<span class="mdi mdi-form-textbox-password"></span>
+												</v-btn>
+											</template>
+										</v-tooltip>
 									</div>
 								</td>
 							</tr>
@@ -54,21 +69,29 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr v-for="(user) in usersRangs" :key="user.email">
+							<tr v-for="(user) in usersRangs" :key="user._id">
 								<td>{{ user.email }}</td>
 								<td>{{ user.name }}</td>
 								<td>{{ user.rang }}</td>
 								<td>
 									<div class="btns">
 										<template v-if="user.rang !== rangMin">
-											<v-btn variant="plain" @click="rangDown(user._id)">
-												<span class="mdi mdi-arrow-down"></span>
-											</v-btn>
+											<v-tooltip text="Понизить ранг" location="right">
+												<template v-slot:activator="{ props }">
+													<v-btn variant="plain" @click="rangDown(user._id)" v-bind="props">
+														<span class="mdi mdi-arrow-down"></span>
+													</v-btn>
+												</template>
+											</v-tooltip>
 										</template>
 										<template v-if="user.rang !== rangMax">
-											<v-btn variant="plain" @click="rangUp(user._id)">
-												<span class="mdi mdi-arrow-up"></span>
-											</v-btn>
+											<v-tooltip text="Повысить ранг" location="right">
+												<template v-slot:activator="{ props }">
+													<v-btn variant="plain" @click="rangUp(user._id)" v-bind="props">
+														<span class="mdi mdi-arrow-up"></span>
+													</v-btn>
+												</template>
+											</v-tooltip>
 										</template>
 									</div>
 								</td>
@@ -108,30 +131,21 @@
 
 				<v-window-item value="four">
 					<div>
-						<div class="item-service">
-							<v-item-group mandatory v-model="selectedServiceDate">
-								<v-row>
-									<v-col
-									v-for="service in servicesDate">
-									<v-item v-slot="{isSelected, toggle}">
-										<v-card
-										:class="isSelected ? 'text-blue' : ''"
-										class="d-flex align-center"
-										@click="toggle"
-										dark>
-										<v-scroll-y-transition>
-											<div class="text-h4 flex-grow-1 text-center">
-												<p>{{ service.service.name }}</p>
-												<p>{{ service.date }}</p>
-												<p>{{ service.time }}</p>
-											</div>
-										</v-scroll-y-transition>
-										</v-card>
-									</v-item>
-									</v-col>
-								</v-row>
-							</v-item-group>
-						</div>
+						<v-autocomplete
+							variant="outlined"
+							return-object
+							v-model="selectedServiceDate"
+							:items="servicesDate"
+							:item-title="getItemText"
+							label="Выберите услугу">
+							<template v-slot:item="{ props, item }">
+								<v-list-item
+									v-bind="props"
+									:subtitle="`${item.raw.date} ${item.raw.time}`"
+									:title="item.raw.service.name">
+								</v-list-item>
+							</template>
+						</v-autocomplete>
 						<v-select
 						v-model="selectedTime"
 						label="Выберите доступное время"
@@ -158,12 +172,36 @@
 				</v-window-item>
 			</v-window>
 		</v-card-text>
+		<v-dialog v-model="modal" max-width="350" @keydown.esc="closeModal" persistent>
+			<v-card>
+				<v-card-title title="Изменение пароля"></v-card-title>
+				<v-card-text>
+					<v-text-field
+						v-model="password"
+						label="Введите пароль"
+						variant="outlined">
+					</v-text-field>
+				</v-card-text>
+				<v-card-actions>
+					<v-btn
+						@click="closeModal"
+						color="blue">
+						Отмена
+					</v-btn>
+					<v-btn
+						@click="updatePassword"
+						color="blue">
+						Сохранить
+					</v-btn>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 	</v-card>
 </template>
 
 <script>
 import { getAllUsersAdmin, upRoleAdmin, downRoleAdmin, getAllUsersRangAdmin, upRangAdmin, downRangAdmin, authMe } from '../api/user.js'
-import { getAllServices, editService, getAllServicesDate, editServiceDate } from '../api/service.js'
+import { getAllServices, editService, getAllServicesDate, editServiceDate, editPassword } from '../api/service.js'
 
 export default {
 	name: "Admin",
@@ -182,7 +220,10 @@ export default {
 			selectedService: '',
 			selectedDate: '',
 			selectedTime: '',
-			selectedServiceDate: '',
+			selectedServiceDate: null,
+			selectedUser: null,
+			modal: false,
+			password: ''
 		}
 	},
 	computed: {
@@ -234,9 +275,22 @@ export default {
 		}
 	},
 	methods: {
+		openModal(id) {
+			this.modal = true;
+			this.selectedUser = id
+		},
+		closeModal() {
+			this.modal = false;
+			this.password = '';
+			this.selectedUser = null;
+		},
+		getItemText(item) {
+			return `${item.service.name} - ${item.date} ${item.time}`;
+		},
 		roleUp(id) {
 			upRoleAdmin({ _id: id }).then((res) => {
 				this.$store.dispatch('saveUserUpdateType', res.data)
+				this.$store.dispatch('saveAddUserRang', res.data)
 			})
 		},
 		roleDown(id) {
@@ -275,8 +329,8 @@ export default {
 			})
 		},
 		editSelectedServiceDate() { 
-			editServiceDate({_id: this.servicesDate[this.selectedServiceDate]._id, time: this.selectedTime, date: this.selectedDate,
-								 authorId: this.servicesDate[this.selectedServiceDate].authorId, service: this.servicesDate[this.selectedServiceDate].service._id}).then((res) => {
+			editServiceDate({_id: this.selectedServiceDate._id, time: this.selectedTime, date: this.selectedDate,
+								 authorId: this.selectedServiceDate.authorId, service: this.selectedServiceDate.service._id}).then((res) => {
 				this.$store.dispatch('saveEditServiceDate', res.data)
 			})
 		},
@@ -299,6 +353,13 @@ export default {
 					this.getServicesDate()
 				})
 			}
+		},
+		updatePassword() {
+			editPassword({id: this.selectedUser, password: this.password}).finally(() => {
+				this.modal = false;
+				this.password = '';
+				this.selectedUser = null;
+			})
 		}
 	},
 	created() {

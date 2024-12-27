@@ -119,3 +119,11 @@ export const editServiceDate = params => {
 		data: params
 	})
 }
+
+export const editPassword = params => {
+	return request({
+		url: '/admin/editPassword',
+		method: 'post',
+		data: params
+	})
+}

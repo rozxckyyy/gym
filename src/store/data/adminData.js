@@ -36,6 +36,11 @@ export default {
 		setDelUserUpdateRang(state, user) {
 			if (user.type === 'user') {
 				state.usersRangs = state.usersRangs.filter(e => e._id !== user._id)
+				state.users.forEach(e => {
+					if (e._id === user._id) {
+						e.type = user.type
+					}
+				});
 			} else if (user.rang === 'Тренер') {
 				state.usersRangs.forEach((e) => {
 					if (e._id === user._id) {
@@ -74,6 +79,9 @@ export default {
 				}
 			});	
 		},
+		setAddUserRang(state, user) {
+			state.usersRangs.push(user);
+		},
 	}, 
 	actions: {
 		saveUsersAdmin(context, users) {
@@ -102,6 +110,9 @@ export default {
 		},
 		saveEditServiceDate(context, service) {
 			context.commit('setEditServiceDate', service);
+		},
+		saveAddUserRang(context, user) {
+			context.commit('setAddUserRang', user);
 		},
 	}
 }
